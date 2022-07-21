@@ -1,6 +1,8 @@
 import axios from "axios";
 import MockAdaptor from "axios-mock-adapter";
+//All axios related code
 
+//Create axios instance
 export const api = axios.create({
   baseURL: "https://api.foursquare.com/v3",
   headers: {
@@ -9,4 +11,5 @@ export const api = axios.create({
   },
 });
 
+//Mock adapter for mock data (test-cases)
 export const mockApi = new MockAdaptor(axios);

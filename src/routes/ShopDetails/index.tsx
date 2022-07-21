@@ -44,21 +44,24 @@ type ShopDetailsState = {
   isLoading: boolean;
 };
 
+//This is route for specific coffee store details
 const ShopDetailsPage = () => {
   const [shopDetails, setShopDetails] = useState<ShopDetailsState>({
     isLoading: true,
     details: {},
   });
   const { id } = useParams();
-
+  //Fetch coffee store details on mount and update loader
   useEffect(() => {
     api
       .get<ShopDetailsResponse>(`/places/${id}`)
       .then((resp) => {
+        //Update data with response once success
         setShopDetails((prev) => ({ ...prev, details: resp.data }));
       })
       .catch((err) => console.error(err))
       .finally(() => {
+        //Irrespective of resolve/reject update loader
         setShopDetails((curShops) => ({ ...curShops, isLoading: false }));
       });
   }, []);

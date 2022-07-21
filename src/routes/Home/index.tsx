@@ -12,7 +12,7 @@ type CoffeeShopState = {
   loading: boolean;
   next?: string;
 };
-
+//This is route for Homepage
 const Home = () => {
   const [location, setLocation] = useState("");
   const [coffeeShops, setCoffeeShops] = useState<CoffeeShopState>({
@@ -21,6 +21,11 @@ const Home = () => {
     loading: true,
     next: "",
   });
+
+  /*
+   * Fetch call wrapped with usecallback to minimize side-effect of being passed as prof to child
+   * Used debounce to restrict multiple api calls
+   */
   const fetchAndUpdateCoffeeShops = useCallback(
     debounce((location: string, cursor: string | undefined) => {
       setCoffeeShops((prevShops) => ({ ...prevShops, loading: true }));
@@ -29,12 +34,13 @@ const Home = () => {
           params: {
             query: location,
             categories: "11126,13032,13033,13034,13035,13036,13063",
-            limit: "3",
+            limit: "30",
             sort: "DISTANCE",
             cursor,
           },
         })
         .then((resp) => {
+          //Fetch next link from response header
           const nextPageLinkParams = new URLSearchParams(
             resp.headers["link"] ?? ""
           );
@@ -56,12 +62,13 @@ const Home = () => {
     setLocation(loc);
   };
 
+  //Fetch data on mount and listen to scroll even for later usage
   useEffect(() => {
     fetchAndUpdateCoffeeShops();
     window.addEventListener("scroll", handlePageScroll);
     return () => window.removeEventListener("scroll", handlePageScroll);
   }, []);
-
+  //Infinite scroll handler - Refetch on document end
   function handlePageScroll() {
     if (
       window.innerHeight + document.documentElement.scrollTop !==
@@ -82,7 +89,7 @@ const Home = () => {
       <Search location={location} onChange={handleQueryUpdate} />
       <CoffeeShops
         shopList={coffeeShops.current}
-        loading={coffeeShops?.loading }
+        loading={coffeeShops?.loading}
       />
     </div>
   );

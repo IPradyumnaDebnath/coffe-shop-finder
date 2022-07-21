@@ -1,3 +1,10 @@
+/**
+* custom hook to get debounced value
+* @params
+* func: callback to be debounces
+* wait: delay in ms
+* @returns debounced function
+*/
 export default function debounce(func, wait) {
   let timeout;
   return function () {
